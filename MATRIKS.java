@@ -472,31 +472,43 @@ public class MATRIKS {
 			}
 		}
 	}
-	
 	public MATRIKS matriksSegitigaBawah(MATRIKS m){
-		double kali;
-		MATRIKS temp = new MATRIKS();
-		temp.MATRIKS(m.baris, m.kolom);
+		int i = 0, j = 0, k = 0;
+		MATRIKS temp1 = new MATRIKS();
+		temp1.MATRIKS(m.baris, m.kolom);
+		MATRIKS temp2 = new MATRIKS();
+		temp2.MATRIKS(m.baris, m.kolom);
 		
-		for (int i = 0; i < temp.baris; i++){
-			for (int j = 0; j < temp.kolom; j++){ 
-				temp.matriks[i][j] = m.matriks[i][j];
+		for (i = 0; i < m.baris; i++) {
+			for (j = 0; j < m.baris; j++) {
+				if (j < i)
+					temp1.matriks[j][i] = 0;
+				else {
+					temp1.matriks[j][i] = m.matriks[j][i];
+					for (k = 0; k < i; k++) {
+					   temp1.matriks[j][i] = temp1.matriks[j][i] - temp1.matriks[j][k] * temp2.matriks[k][i];
+					}
+				}
 			}
+			
+			for (j = 0; j < m.baris; j++) {
+				if (j < i)
+					temp2.matriks[i][j] = 0;
+				else if (j == i)
+					temp2.matriks[i][j] = 1;
+				else {
+					temp2.matriks[i][j] = m.matriks[i][j] / temp1.matriks[i][i];
+					for (k = 0; k < i; k++) {
+						temp2.matriks[i][j] = temp2.matriks[i][j] - ((temp1.matriks[i][k] * temp2.matriks[k][j]) / temp1.matriks[i][i]);
+					}
+				}
+			 }
 		}
-		
-		for (int k = 0; k < temp.baris; k++){
-			for (int l = 0; l < temp.kolom; l++){
-				kali = temp.matriks[k][k];
-				m.matriks[k][l] *= kali;
-			}
-		}
-		
-		return m;
+		return temp1;
 	}
 	
 	public double determinanGauss(MATRIKS m){
 		double det = 1;
-		gaussOp();
 		if (isSquare(m)){
 			m = m.matriksSegitigaBawah(m);
 			for (int i = 0; i < m.baris; i++){
@@ -506,6 +518,7 @@ public class MATRIKS {
 			System.out.println("Ukuran Matriks tidak sesuai");
 		return det;
 	}
+	
 	public MATRIKS InverseAdDet(MATRIKS m)
 	{
 		int i;
